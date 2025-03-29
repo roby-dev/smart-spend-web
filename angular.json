@@ -91,7 +91,12 @@
           }
         },
         "deploy": {
-          "builder": "angular-cli-ghpages:deploy"
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "/smart-spend-web/",
+            "name": "roby-dev",
+            "email": "robzunigas@upt.pe"
+          }
         }
       }
     }
