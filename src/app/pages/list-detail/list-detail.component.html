@@ -15,7 +15,7 @@
                 class="text-4xl font-light text-gray-800 cursor-pointer">
                 {{ listName() }}
             </h1>
-            <input *ngIf="isEditingTitle()" [(ngModel)]="editedListName" (blur)="saveTitle()"
+            <input #inputTitle *ngIf="isEditingTitle()" [(ngModel)]="editedListName" (blur)="saveTitle()"
                 (keydown)="onTitleInputKeydown($event)"
                 class="text-4xl font-light text-gray-800 border-b-2 border-gray-400 focus:outline-none focus:border-purple-500 w-full" />
         </div>
@@ -33,12 +33,21 @@
                 [class.border-gray-100]="!last">
                 <div class="flex justify-between items-start">
                     <h2 class="text-xl font-medium text-gray-800">{{item.nombre}}</h2>
-                    <p class="text-xl font-medium text-gray-800">S/ {{item.precio.toFixed(2)}}</p>
+                    <div class="flex items-center">
+                        <span class="text-xl font-medium text-gray-800">S/ </span>
+                        <p *ngIf="!item.isEditing()" (click)="startEditingPrice(item.isEditing)"
+                            class="text-xl font-medium text-gray-800">
+                            {{item.precio.toFixed(2)}}
+                        </p>
+                        <input #inputPrice *ngIf="item.isEditing()" [(ngModel)]="item.precio" (blur)="savePrice(item)"                     
+                            (keydown)="onPriceInputKeydown($event, item)"  
+                            class="text-xl font-medium text-gray-800 border-b-2 border-gray-400 focus:outline-none focus:border-purple-500" />
+                    </div>
                 </div>
                 <p class="text-gray-400 text-sm mt-1">{{item.fecha}}</p>
 
                 <!-- Botón de eliminar -->
-                <button class="absolute right-0 top-4 text-gray-400 hover:text-red-500" (click)="deleteItem(item.id!)">
+                <button class="absolute right-0 bottom-0 text-gray-400 hover:text-red-500" (click)="deleteItem(item.id!)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="3 6 5 6 21 6"></polyline>
@@ -76,12 +85,12 @@
         <h2 class="text-xl font-medium text-gray-800 mb-4">Nuevo Item</h2>
 
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre" >
                 Nombre
             </label>
             <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="nombre" type="text" placeholder="Ej: Leche" [(ngModel)]="newItem.nombre">
+                id="nombre" type="text" placeholder="Ej: Leche" [(ngModel)]="newItem.nombre" #inputItem>
         </div>
 
         <div class="mb-4">
@@ -99,7 +108,7 @@
                 Cancelar
             </button>
             <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
-                (click)="addNewItem()" [disabled]="!newItem.nombre.trim() || newItem.precio <= 0">
+                (click)="addNewItem()" [disabled]="!newItem.nombre.trim() || newItem.precio < 0">
                 Guardar
             </button>
         </div>

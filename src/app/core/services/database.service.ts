@@ -159,8 +159,14 @@ export class DatabaseService {
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction(['compraDetalles'], 'readwrite');
       const store = transaction.objectStore('compraDetalles');
-      const request = store.add(detalle);
-
+      const { nombre ,precio, fecha , compraId} = detalle;
+      const request = store.add({
+        nombre,
+        precio,
+        fecha,
+        compraId
+      } as CompraDetalle);
+      
       request.onsuccess = () => {
         resolve(request.result as number);
       };
@@ -175,7 +181,15 @@ export class DatabaseService {
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction(['compraDetalles'], 'readwrite');
       const store = transaction.objectStore('compraDetalles');
-      const request = store.put(detalle);
+      const { id, nombre ,precio, fecha , compraId} = detalle;
+
+      const request = store.put({
+        id,
+        nombre,
+        precio,
+        fecha,
+        compraId
+      } as CompraDetalle);
 
       request.onsuccess = () => {
         resolve();

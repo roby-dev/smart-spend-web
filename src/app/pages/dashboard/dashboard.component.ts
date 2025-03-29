@@ -1,6 +1,6 @@
 // dashboard/dashboard.component.ts
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, inject, AfterContentInit } from '@angular/core';
+import { Component, OnInit, signal, inject, AfterContentInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatabaseService } from '../../core/services/database.service';
@@ -28,6 +28,13 @@ export class DashboardComponent implements AfterContentInit {
   showAddModal = signal<boolean>(false);
   newList = { titulo: '' };
 
+  @ViewChild('inputItem', { static: false })
+  set inputItem(element: ElementRef<HTMLInputElement>) {
+    if (element) {
+      element.nativeElement.focus()
+    }
+  }
+  
   ngAfterContentInit(): void {
     this.loadLists();
   }
@@ -61,6 +68,7 @@ export class DashboardComponent implements AfterContentInit {
     this.showAddModal.update(value => !value);
     if (!this.showAddModal()) {
       this.newList.titulo = '';
+      
     }
   }
 
