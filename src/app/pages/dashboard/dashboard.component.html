@@ -1,0 +1,94 @@
+<!-- dashboard/dashboard.component.html -->
+<div class="flex flex-col h-screen bg-gray-50">
+    <!-- Icono de Configuración -->
+    <div class="flex justify-end p-4">
+        <button class="text-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="px-6 pb-20">
+        <h1 class="text-4xl font-light text-gray-800 mb-6">Mis listas</h1>
+
+        <!-- Estado de carga -->
+        <div *ngIf="isLoading()" class="flex justify-center my-8">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700"></div>
+        </div>
+
+        <!-- Elementos de la Lista -->
+        <ng-container *ngIf="!isLoading()">
+            @for(item of lists(); track item.id){
+            <div (click)="navigateToDetail(item.id!)"
+                class="bg-white rounded-lg p-4 shadow-sm cursor-pointer mb-5 relative">
+                <div class="flex justify-between items-start">
+                    <h2 class="text-xl font-medium text-gray-800">{{item.titulo}}</h2>
+                    <p class="text-xl font-medium text-gray-800">S/ {{item.totalAmount}}</p>
+                </div>
+                <p class="text-right text-gray-400 text-sm mt-1">{{item.fecha}}</p>
+
+                <!-- Botón de eliminar -->
+                <button class="absolute right-2 top-2 text-gray-400 hover:text-red-500"
+                    (click)="deleteList($event, item.id!)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
+            </div>
+
+            }
+
+            <div *ngIf="lists().length === 0" class="text-center text-gray-500 my-8">
+                No hay listas disponibles. ¡Crea una nueva!
+            </div>
+        </ng-container>
+    </div>
+
+    <!-- Botón de Acción Flotante -->
+    <div class="fixed bottom-8 right-8">
+        <button class="h-16 w-16 rounded-full bg-purple-200 flex items-center justify-center shadow-lg"
+            (click)="toggleAddModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="text-purple-900">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Modal para agregar nueva lista -->
+    <div *ngIf="showAddModal()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-11/12 max-w-md">
+            <h2 class="text-xl font-medium text-gray-800 mb-4">Nueva Lista</h2>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="titulo">
+                    Nombre de la lista
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="titulo" type="text" placeholder="Ej: Compras del mercado" [(ngModel)]="newList.titulo">
+            </div>
+
+            <div class="flex justify-end space-x-2">
+                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+                    (click)="toggleAddModal()">
+                    Cancelar
+                </button>
+                <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+                    (click)="addNewList()" [disabled]="!newList.titulo.trim()">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
