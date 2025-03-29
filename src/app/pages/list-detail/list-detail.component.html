@@ -44,7 +44,7 @@
                             class="text-xl font-medium text-gray-800 border-b-2 border-gray-400 focus:outline-none focus:border-purple-500" />
                     </div>
                 </div>
-                <p class="text-gray-400 text-sm mt-1">{{item.fecha}}</p>
+                <p class="text-gray-400 text-sm mt-1">{{formatDate(item.fecha)}}</p>
 
                 <!-- Botón de eliminar -->
                 <button class="absolute right-0 bottom-0 text-gray-400 hover:text-red-500" (click)="deleteItem(item.id!)">

@@ -178,18 +178,14 @@ export class DatabaseService {
   }
 
   updateCompraDetalle(detalle: CompraDetalle): Promise<void> {
+    console.log(detalle);
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction(['compraDetalles'], 'readwrite');
       const store = transaction.objectStore('compraDetalles');
-      const { id, nombre ,precio, fecha , compraId} = detalle;
+      const { isEditing, ... detail } = detalle; // Desestructuramos para eliminar isEditing
 
-      const request = store.put({
-        id,
-        nombre,
-        precio,
-        fecha,
-        compraId
-      } as CompraDetalle);
+      console.log(detail);
+      const request = store.put(detail as CompraDetalle);
 
       request.onsuccess = () => {
         resolve();

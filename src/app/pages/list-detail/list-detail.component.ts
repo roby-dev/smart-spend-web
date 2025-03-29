@@ -63,9 +63,9 @@ export class ListDetailComponent implements OnInit {
 
       // Cargar detalles de la compra
       const detalles = await this.dbService.getDetallesByCompraId(id);
+      console.log(detalles)
       this.listItems.set(detalles.map(detalle => ({
         ...detalle,
-        fecha: this.formatDate(detalle.fecha),
         isEditing: signal(false) // Cambiado a signal
       })));
 
@@ -124,7 +124,7 @@ export class ListDetailComponent implements OnInit {
     }
   }
 
-  private formatDate(dateString: string): string {
+  formatDate(dateString: string): string {
     const date = new Date(dateString);
 
     const day = date.getDate();
